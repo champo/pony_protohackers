@@ -1,0 +1,10 @@
+version: "2.4"
+
+services:
+  smoke:
+    build: 
+      context: ./proto01-smoke
+    environment:
+      - port=8000
+    ports:
+      - 8000:8000
