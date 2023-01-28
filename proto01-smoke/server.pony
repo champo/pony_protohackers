@@ -35,8 +35,12 @@ class MyTCPConnectionNotify is TCPConnectionNotify
       false
     end
 
-
     conn.write(String.from_array(consume data))
+
+    if hasNullTermination then
+      conn.close()
+    end
+
     true
 
   fun ref connect_failed(conn: TCPConnection ref) =>
