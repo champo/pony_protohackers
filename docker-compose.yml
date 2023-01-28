@@ -3,8 +3,9 @@ version: "2.4"
 services:
   smoke:
     build: 
-      context: ./proto01-smoke
+      context: ./servers
     environment:
       - port=8000
+      - problem=0
     ports:
       - 8000:8000

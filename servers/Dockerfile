@@ -27,11 +27,11 @@ FROM compiler AS builder
 COPY . /src
 
 RUN cd /src \
-    && ponyc
+    && ponyc -b servers
 
 FROM deps
 
 WORKDIR /app
-COPY --from=builder /src/src /app/proto01-smoke
+COPY --from=builder /src/servers /app/servers
 
-CMD ["/app/proto01-smoke"]
+CMD ["/app/servers"]
