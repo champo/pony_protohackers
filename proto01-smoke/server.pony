@@ -29,6 +29,13 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     : Bool
   =>
     logger.log("Wrote " + data.size().string() + " bytes")
+    let hasNullTermination = try 
+      data(data.size())? == 0
+    else
+      false
+    end
+
+
     conn.write(String.from_array(consume data))
     true
 
