@@ -21,7 +21,6 @@ class MyTCPConnectionNotify is TCPConnectionNotify
 
   fun ref accepted(conn: TCPConnection ref) =>
     logger.log("Accepted")
-    //conn.write("ble")
 
   fun ref closed(conn: TCPConnection ref) =>
     logger.log("Closed") 
@@ -32,21 +31,8 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     times: USize)
     : Bool
   =>
-    (let writeUpTo, let shouldClose) = try 
-      (data.find(0)? + 1, true)
-    else
-      (data.size(), false)
-    end
-
-    logger.log("Got " + data.size().string() + " bytes, will write " + writeUpTo.string())
-    //data.trim_in_place(0, writeUpTo)
+    logger.log("Got " + data.size().string() + " bytes")
     conn.write_final(consume data)
-
-    //if shouldClose then
-      //logger.log("Closed due to null-byte")
-      //conn.mute()
-      //conn.close()
-    //end
 
     true
 
