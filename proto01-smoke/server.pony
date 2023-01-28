@@ -43,9 +43,9 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     conn.write_final(consume data)
 
     if shouldClose then
-      logger.log("Closed due to null-byte")
-      conn.mute()
-      conn.close()
+      //logger.log("Closed due to null-byte")
+      //conn.mute()
+      //conn.close()
     end
 
     true
