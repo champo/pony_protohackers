@@ -28,16 +28,17 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     times: USize)
     : Bool
   =>
-    logger.log("Wrote " + data.size().string() + " bytes")
     let hasNullTermination = try 
-      data(data.size())? == 0
+      data(data.size() - 1)? == 0
     else
       false
     end
 
+    logger.log("Wrote " + data.size().string() + " bytes")
     conn.write(String.from_array(consume data))
 
     if hasNullTermination then
+      logger.log("Closed due to null-byte")
       conn.close()
     end
 
