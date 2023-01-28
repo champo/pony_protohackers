@@ -1,4 +1,5 @@
 use "net"
+use "cli"
 
 actor Logger
    let out: OutStream
@@ -49,6 +50,7 @@ class MyTCPListenNotify is TCPListenNotify
 actor Main
   new create(env: Env) =>
     let logger = Logger(env.out)
+    let port = try EnvVars(env.vars)("port")? else "8989" end
 
     TCPListener(TCPListenAuth(env.root),
-      recover MyTCPListenNotify(logger) end, "", "8989")
+      recover MyTCPListenNotify(logger) end, "", port)
