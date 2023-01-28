@@ -2,20 +2,6 @@ use "pony_test"
 use "net"
 use "../"
 
-
-actor Main is TestList
-  new create(env: Env) =>
-    PonyTest(env, this)
-
-  new make() =>
-    None
-
-  fun tag tests(test: PonyTest) =>
-    test(_TestOpenClose)
-    test(_TestWriteNulAtEnd)
-    test(_TestWriteNulAtMiddle)
-    test(_TestWriteTwice)
-
 actor NulLogger
   be log (msg: String) =>
     None
@@ -23,10 +9,10 @@ actor NulLogger
 class iso _TestOpenClose is UnitTest
   let port: String = "8989"
 
-  fun name(): String => "open then close"
+  fun name(): String => "p01/open then close"
 
   fun apply(h: TestHelper) =>
-    h.long_test(2_000_000_000)
+    h.long_test(1_000_000_000)
     h.expect_action("connected")
     h.expect_action("closed")
 
@@ -67,10 +53,10 @@ class iso _TestOpenClose is UnitTest
 class iso _TestWriteNulAtEnd is UnitTest
   let port: String = "8989"
 
-  fun name(): String => "write nul at end"
+  fun name(): String => "p01/write nul at end"
 
   fun apply(h: TestHelper) =>
-    h.long_test(12_000_000_000)
+    h.long_test(1_000_000_000)
     h.expect_action("connected")
     h.expect_action("receive")
     h.expect_action("closed")
@@ -97,6 +83,9 @@ class iso _TestWriteNulAtEnd is UnitTest
         fun ref received(conn: TCPConnection ref, data: Array[U8] iso, times: USize): Bool =>
           h.assert_array_eq[U8]("nul at end\0", consume data)
           h.complete_action("receive")
+
+          conn.close()
+
           true
 
         fun ref connect_failed(conn: TCPConnection ref) =>
@@ -112,10 +101,10 @@ class iso _TestWriteNulAtEnd is UnitTest
 class iso _TestWriteNulAtMiddle is UnitTest
   let port: String = "8989"
 
-  fun name(): String => "write nul at middle"
+  fun name(): String => "p01/write nul at middle"
 
   fun apply(h: TestHelper) =>
-    h.long_test(12_000_000_000)
+    h.long_test(1_000_000_000)
     h.expect_action("connected")
     h.expect_action("receive")
     h.expect_action("closed")
@@ -140,8 +129,11 @@ class iso _TestWriteNulAtMiddle is UnitTest
           h.complete_action("closed")
 
         fun ref received(conn: TCPConnection ref, data: Array[U8] iso, times: USize): Bool =>
-          h.assert_array_eq[U8]("nul at\0", consume data)
+          h.assert_array_eq[U8]("nul at\0middle", consume data)
           h.complete_action("receive")
+
+          conn.close()
+
           true
 
         fun ref connect_failed(conn: TCPConnection ref) =>
@@ -157,10 +149,10 @@ class iso _TestWriteNulAtMiddle is UnitTest
 class iso _TestWriteTwice is UnitTest
   let port: String = "8989"
 
-  fun name(): String => "write twice"
+  fun name(): String => "p01/write twice"
 
   fun apply(h: TestHelper) =>
-    h.long_test(12_000_000_000)
+    h.long_test(1_000_000_000)
     h.expect_action("connected")
     h.expect_action("receive_first")
     h.expect_action("receive_second")
@@ -198,6 +190,8 @@ class iso _TestWriteTwice is UnitTest
           else
             h.assert_array_eq[U8]("second part\0", consume data)
             h.complete_action("receive_second")
+
+            conn.close()
           end
           
           true
