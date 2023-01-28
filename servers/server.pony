@@ -23,5 +23,15 @@ actor Main
       ("8989", "0")
     end
 
-    TCPListener(TCPListenAuth(env.root),
-      recover MyTCPListenNotify(logger) end, "", port)
+    var listener =  match problem
+    | "0" => recover Smoke(logger) end
+    else
+      return
+    end
+
+    TCPListener(
+      TCPListenAuth(env.root),
+      consume listener, 
+      "", 
+      port
+    )

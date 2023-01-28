@@ -1,6 +1,6 @@
 use "net"
 
-class MyTCPConnectionNotify is TCPConnectionNotify
+class SmokeConnectionListener is TCPConnectionNotify
   let logger: Logger
 
   new create(logger': Logger) =>
@@ -26,14 +26,14 @@ class MyTCPConnectionNotify is TCPConnectionNotify
   fun ref connect_failed(conn: TCPConnection ref) =>
     None
 
-class MyTCPListenNotify is TCPListenNotify
+class Smoke is TCPListenNotify
   let logger: Logger
 
   new create(logger': Logger) =>
     logger = logger'
 
   fun ref connected(listen: TCPListener ref): TCPConnectionNotify iso^ =>
-    recover MyTCPConnectionNotify(logger) end
+    recover SmokeConnectionListener(logger) end
 
   fun ref not_listening(listen: TCPListener ref) =>
     None

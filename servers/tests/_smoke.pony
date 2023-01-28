@@ -19,7 +19,7 @@ class iso _TestOpenClose is UnitTest
     h.dispose_when_done(
       TCPListener(
         TCPListenAuth(h.env.root),
-        recover MyTCPListenNotify(NulLogger) end, 
+        recover Smoke(NulLogger) end, 
         "", 
         port
       )
@@ -64,7 +64,7 @@ class iso _TestWriteNulAtEnd is UnitTest
     h.dispose_when_done(
       TCPListener(
         TCPListenAuth(h.env.root),
-        recover MyTCPListenNotify(OutStreamLogger(h.env.out)) end, 
+        recover Smoke(OutStreamLogger(h.env.out)) end, 
         "", 
         port
       )
@@ -112,7 +112,7 @@ class iso _TestWriteNulAtMiddle is UnitTest
     h.dispose_when_done(
       TCPListener(
         TCPListenAuth(h.env.root),
-        recover MyTCPListenNotify(OutStreamLogger(h.env.out)) end, 
+        recover Smoke(OutStreamLogger(h.env.out)) end, 
         "", 
         port
       )
@@ -161,7 +161,7 @@ class iso _TestWriteTwice is UnitTest
     h.dispose_when_done(
       TCPListener(
         TCPListenAuth(h.env.root),
-        recover MyTCPListenNotify(OutStreamLogger(h.env.out)) end, 
+        recover Smoke(OutStreamLogger(h.env.out)) end, 
         "", 
         port
       )
