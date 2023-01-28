@@ -39,7 +39,7 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     end
 
     logger.log("Got " + data.size().string() + " bytes, will write " + writeUpTo.string())
-    data.trim_in_place(0, writeUpTo)
+    //data.trim_in_place(0, writeUpTo)
     conn.write_final(consume data)
 
     //if shouldClose then
