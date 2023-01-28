@@ -1,7 +1,10 @@
 use "net"
 use "cli"
 
-actor Logger
+interface tag Logger
+  be log(msg: String)
+
+actor OutStreamLogger is Logger
    let out: OutStream
 
    new create(out': OutStream) =>
@@ -18,6 +21,7 @@ class MyTCPConnectionNotify is TCPConnectionNotify
 
   fun ref accepted(conn: TCPConnection ref) =>
     logger.log("Accepted")
+    //conn.write("ble")
 
   fun ref closed(conn: TCPConnection ref) =>
     logger.log("Closed") 
@@ -28,16 +32,17 @@ class MyTCPConnectionNotify is TCPConnectionNotify
     times: USize)
     : Bool
   =>
-    let hasNullTermination = try 
-      data(data.size() - 1)? == 0
+    (let writeUpTo, let shouldClose) = try 
+      (data.find(0)? + 1, true)
     else
-      false
+      (data.size(), false)
     end
 
-    logger.log("Wrote " + data.size().string() + " bytes")
-    conn.write(String.from_array(consume data))
+    logger.log("Got " + data.size().string() + " bytes, will write " + writeUpTo.string())
+    data.trim_in_place(0, writeUpTo)
+    conn.write_final(consume data)
 
-    if hasNullTermination then
+    if shouldClose then
       logger.log("Closed due to null-byte")
       conn.close()
     end
@@ -61,7 +66,7 @@ class MyTCPListenNotify is TCPListenNotify
 
 actor Main
   new create(env: Env) =>
-    let logger = Logger(env.out)
+    let logger: Logger = OutStreamLogger(env.out)
     let port = try EnvVars(env.vars)("port")? else "8989" end
 
     TCPListener(TCPListenAuth(env.root),
